@@ -1,0 +1,18 @@
+name: financial-guard
+on:
+  pull_request:
+  workflow_call:
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fail on financial-class files or 16-digit card-like runs in history
+        run: |
+          set -e
+          bad=$(git rev-list --all --objects | grep -iE '\.(xlsx|xlsm|xlsb|xls|csv|ofx|qfx|qbo|bundle)$' || true)
+          if [ -n "$bad" ]; then echo "Financial-class file in history:"; echo "$bad"; exit 1; fi
+          if git grep -IEn '\b[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}\b' -- . ':!docs/*.js' ':!docs/*.css' | grep -v '^$'; then
+            echo "Card-like number in tracked text"; exit 1; fi
