@@ -1,0 +1,12 @@
+# Financial-class files are never published from this repo (extension family, not filenames)
+*.xlsx
+*.xlsm
+*.xlsb
+*.xls
+*.csv
+*.ofx
+*.qfx
+*.qbo
+*.bundle
+*.map
+unpacked/
